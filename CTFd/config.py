@@ -106,9 +106,9 @@ class ServerConfig(object):
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
     CACHE_REDIS_URL = REDIS_URL
     if CACHE_REDIS_URL:
-        CACHE_TYPE: str = "redis"
+        CACHE_TYPE: str = "RedisCache"
     else:
-        CACHE_TYPE: str = "filesystem"
+        CACHE_TYPE: str = "FileSystemCache"
         CACHE_DIR: str = os.path.join(
             os.path.dirname(__file__), os.pardir, ".data", "filesystem_cache"
         )
@@ -238,7 +238,7 @@ class TestingConfig(ServerConfig):
     SERVER_NAME = "localhost"
     UPDATE_CHECK = False
     REDIS_URL = None
-    CACHE_TYPE = "simple"
+    CACHE_TYPE = "SimpleCache"
     CACHE_THRESHOLD = 500
     SAFE_MODE = True
 
