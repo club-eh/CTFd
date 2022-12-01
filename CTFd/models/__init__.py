@@ -266,6 +266,7 @@ class Files(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(80), default="standard")
     location = db.Column(db.Text)
+    content_label = db.Column(db.Text)
 
     __mapper_args__ = {"polymorphic_identity": "standard", "polymorphic_on": type}
 
