@@ -17,7 +17,7 @@ def upload_file(*args, **kwargs):
     page_id = kwargs.get("page_id") or kwargs.get("page")
     file_type = kwargs.get("type", "standard")
 
-    model_args = {"type": file_type, "location": None}
+    model_args = {"type": file_type, "location": None, "content_label": kwargs.get("content_label", None)}
 
     model = Files
     if file_type == "challenge":
