@@ -64,7 +64,7 @@ class TagList(Resource):
         field = str(query_args.pop("field", None))
         filters = build_model_filters(model=Tags, query=q, field=field)
 
-        tags = Tags.query.filter_by(**query_args).filter(*filters).all()
+        tags = Tags.query.filter_by(**query_args).filter(*filters).order_by(Tags.order_idx.asc()).all()
         schema = TagSchema(many=True)
         response = schema.dump(tags)
 

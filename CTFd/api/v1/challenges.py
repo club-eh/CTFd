@@ -211,6 +211,7 @@ class ChallengeList(Resource):
                     "solves": solve_counts.get(challenge.id, solve_count_dfl),
                     "solved_by_me": challenge.id in user_solves,
                     "category": challenge.category,
+                    #"tags": sorted(tag_schema.dump(challenge.tags).data, key=lambda x: x["order_idx"]),
                     "tags": tag_schema.dump(challenge.tags).data,
                     "template": challenge_type.templates["view"],
                     "script": challenge_type.scripts["view"],
@@ -347,6 +348,7 @@ class Challenge(Resource):
                 abort(403)
 
         tags = [
+            #tag["value"] for tag in sorted(TagSchema("user", many=True).dump(chal.tags).data, key=lambda x: x["order_idx"])
             tag["value"] for tag in TagSchema("user", many=True).dump(chal.tags).data
         ]
 
@@ -735,10 +737,18 @@ class ChallengeFiles(Resource):
 
         challenge_files = ChallengeFilesModel.query.filter_by(
             challenge_id=challenge_id
-        ).all()
+        ).order_by(ChallengeFilesModel.order_idx.asc()).all()
 
         for f in challenge_files:
-            response.append({"id": f.id, "type": f.type, "location": f.location})
+            response.append(
+                {
+                    "id": f.id,
+                    "order_idx": f.order_idx,
+                    "type": f.type,
+                    "location": f.location,
+                    "content_label": f.content_label,
+                }
+            )
         return {"success": True, "data": response}
 
 
@@ -748,11 +758,16 @@ class ChallengeTags(Resource):
     def get(self, challenge_id):
         response = []
 
-        tags = Tags.query.filter_by(challenge_id=challenge_id).all()
+        tags = Tags.query.filter_by(challenge_id=challenge_id).order_by(Tags.order_idx.asc()).all()
 
         for t in tags:
             response.append(
-                {"id": t.id, "challenge_id": t.challenge_id, "value": t.value}
+                {
+                    "id": t.id,
+                    "order_idx": t.order_idx,
+                    "challenge_id": t.challenge_id,
+                    "value": t.value,
+                }
             )
         return {"success": True, "data": response}
 
@@ -781,7 +796,7 @@ class ChallengeTopics(Resource):
 class ChallengeHints(Resource):
     @admins_only
     def get(self, challenge_id):
-        hints = Hints.query.filter_by(challenge_id=challenge_id).all()
+        hints = Hints.query.filter_by(challenge_id=challenge_id).order_by(Hints.order_idx.asc()).all()
         schema = HintSchema(many=True)
         response = schema.dump(hints)
 

@@ -65,7 +65,7 @@ class FilesList(Resource):
         field = str(query_args.pop("field", None))
         filters = build_model_filters(model=Files, query=q, field=field)
 
-        files = Files.query.filter_by(**query_args).filter(*filters).all()
+        files = Files.query.filter_by(**query_args).filter(*filters).order_by(Files.order_idx.asc()).all()
         schema = FileSchema(many=True)
         response = schema.dump(files)
 

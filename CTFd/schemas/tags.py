@@ -8,7 +8,7 @@ class TagSchema(ma.ModelSchema):
         include_fk = True
         dump_only = ("id",)
 
-    views = {"admin": ["id", "challenge", "value"], "user": ["value"]}
+    views = {"admin": ["id", "order_idx", "challenge", "value"], "user": ["value"]}
 
     def __init__(self, view=None, *args, **kwargs):
         if view:

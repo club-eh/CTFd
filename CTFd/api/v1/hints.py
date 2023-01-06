@@ -67,7 +67,7 @@ class HintList(Resource):
         field = str(query_args.pop("field", None))
         filters = build_model_filters(model=Hints, query=q, field=field)
 
-        hints = Hints.query.filter_by(**query_args).filter(*filters).all()
+        hints = Hints.query.filter_by(**query_args).filter(*filters).order_by(Hints.order_idx.asc()).all()
         response = HintSchema(many=True, view="locked").dump(hints)
 
         if response.errors:

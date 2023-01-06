@@ -105,9 +105,9 @@ class Challenges(db.Model):
     state = db.Column(db.String(80), nullable=False, default="visible")
     requirements = db.Column(db.JSON)
 
-    files = db.relationship("ChallengeFiles", backref="challenge")
-    tags = db.relationship("Tags", backref="challenge")
-    hints = db.relationship("Hints", backref="challenge")
+    files = db.relationship("ChallengeFiles", backref="challenge", order_by="ChallengeFiles.order_idx")
+    tags = db.relationship("Tags", backref="challenge", order_by="Tags.order_idx")
+    hints = db.relationship("Hints", backref="challenge", order_by="Hints.order_idx")
     flags = db.relationship("Flags", backref="challenge")
     comments = db.relationship("ChallengeComments", backref="challenge")
     topics = db.relationship("ChallengeTopics", backref="challenge")
@@ -152,6 +152,7 @@ class Challenges(db.Model):
 class Hints(db.Model):
     __tablename__ = "hints"
     id = db.Column(db.Integer, primary_key=True)
+    order_idx = db.Column(db.Integer, default=0)
     type = db.Column(db.String(80), default="standard")
     challenge_id = db.Column(
         db.Integer, db.ForeignKey("challenges.id", ondelete="CASCADE")
@@ -227,6 +228,7 @@ class Awards(db.Model):
 class Tags(db.Model):
     __tablename__ = "tags"
     id = db.Column(db.Integer, primary_key=True)
+    order_idx = db.Column(db.Integer, default=0)
     challenge_id = db.Column(
         db.Integer, db.ForeignKey("challenges.id", ondelete="CASCADE")
     )
@@ -264,6 +266,7 @@ class ChallengeTopics(db.Model):
 class Files(db.Model):
     __tablename__ = "files"
     id = db.Column(db.Integer, primary_key=True)
+    order_idx = db.Column(db.Integer, default=0)
     type = db.Column(db.String(80), default="standard")
     location = db.Column(db.Text)
 

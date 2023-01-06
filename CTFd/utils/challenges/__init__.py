@@ -42,6 +42,7 @@ def get_all_challenges(admin=False, field=None, q=None, **query_args):
             value=c.value,
             category=c.category,
             requirements=c.requirements,
+            #tags=sorted(tag_schema.dump(c.tags).data, key=lambda x: x["order_idx"]),
             tags=tag_schema.dump(c.tags).data,
         )
         results.append(ct)
