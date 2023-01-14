@@ -57,9 +57,9 @@ def build(cmd):
 
 
 @manager.command
-def export_ctf(path=None):
+def export_ctf(path=None, compact=False):
     with app.app_context():
-        backup = export_ctf_util()
+        backup = export_ctf_util(compact=compact)
 
         if path:
             with open(path, "wb") as target:

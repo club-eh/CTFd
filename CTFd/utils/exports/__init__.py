@@ -37,7 +37,7 @@ from CTFd.utils.migrations import (
 from CTFd.utils.uploads import get_uploader
 
 
-def export_ctf():
+def export_ctf(compact: bool = False):
     # TODO: For some unknown reason dataset is only able to see alembic_version during tests.
     # Even using a real sqlite database. This makes this test impossible to pass in sqlite.
     db = dataset.connect(get_app_config("SQLALCHEMY_DATABASE_URI"))
@@ -68,19 +68,20 @@ def export_ctf():
         backup_zip.writestr("db/alembic_version.json", result_file.read())
 
     # Backup uploads
-    uploader = get_uploader()
-    uploader.sync()
+    if not compact:
+        uploader = get_uploader()
+        uploader.sync()
 
-    upload_folder = os.path.join(
-        os.path.normpath(app.root_path), app.config.get("UPLOAD_FOLDER")
-    )
-    for root, _dirs, files in os.walk(upload_folder):
-        for file in files:
-            parent_dir = os.path.basename(root)
-            backup_zip.write(
-                os.path.join(root, file),
-                arcname=os.path.join("uploads", parent_dir, file),
-            )
+        upload_folder = os.path.join(
+            os.path.normpath(app.root_path), app.config.get("UPLOAD_FOLDER")
+        )
+        for root, _dirs, files in os.walk(upload_folder):
+            for file in files:
+                parent_dir = os.path.basename(root)
+                backup_zip.write(
+                    os.path.join(root, file),
+                    arcname=os.path.join("uploads", parent_dir, file),
+                )
 
     backup_zip.close()
     backup.seek(0)
